@@ -4,6 +4,7 @@ import java.util.List;
 public class CommunicationsMonitor {
 
 	private HashMap<Integer, List<ComputerNode>> mapping;
+	private List<ComputerNode> nodes;
 	
 	public CommunicationsMonitor() {
 			
@@ -25,5 +26,9 @@ public class CommunicationsMonitor {
 	
 	public HashMap<Integer, List<ComputerNode>> getComputerMapping(){
 		return this.mapping;
+	}
+	
+	public List<ComputerNode> getComputerMapping(int c){
+		return this.nodes;
 	}
 }
