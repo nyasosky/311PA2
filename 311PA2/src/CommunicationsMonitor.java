@@ -1,7 +1,10 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 public class CommunicationsMonitor {
 
+	private HashMap<Integer, List<ComputerNode>> mapping;
+	
 	public CommunicationsMonitor() {
 			
 	}
@@ -18,5 +21,9 @@ public class CommunicationsMonitor {
 		List<ComputerNode> list = new ArrayList<ComputerNode>();
 		
 		return list;
+	}
+	
+	public HashMap<Integer, List<ComputerNode>> getComputerMapping(){
+		return this.mapping;
 	}
 }
