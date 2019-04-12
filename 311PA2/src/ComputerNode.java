@@ -23,6 +23,10 @@ public class ComputerNode {
 		return this.outNeighbors;
 	}
 	
+	public void addOutNeighbor(ComputerNode outNeighbor) {
+		outNeighbors.add(outNeighbor);
+	}
+	
 	
 
 }

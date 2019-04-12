@@ -4,19 +4,18 @@ import java.util.List;
 public class CommunicationsMonitor {
 
 	private HashMap<Integer, List<ComputerNode>> mapping = new HashMap<Integer, List<ComputerNode>>();
-	private List<ComputerNode> nodes = new ArrayList<ComputerNode>();
 	
 	public CommunicationsMonitor() {
 			
 	}
 	
 	public void addCommuncication(int c1, int c2, int timestamp) {
-		List<ComputerNode> list = new ArrayList<ComputerNode>();
-		list.add(new ComputerNode(c1, timestamp));
-		list.add(new ComputerNode(c2, timestamp));
-		nodes.add(new ComputerNode(c1, timestamp));
-		nodes.add(new ComputerNode(c2, timestamp));
-		mapping.put(timestamp, list);
+		ComputerNode c1Node = new ComputerNode(c1, timestamp);
+		ComputerNode c2Node = new ComputerNode(c2, timestamp);
+		c1Node.addOutNeighbor(c2Node);
+		c2Node.addOutNeighbor(c1Node);
+		mapping.get(c1).add(c1Node);
+		mapping.get(c2).add(c2Node);
 	}
 	
 	public void createGraph() {
@@ -34,7 +33,7 @@ public class CommunicationsMonitor {
 	}
 	
 	public List<ComputerNode> getComputerMapping(int c){
-		return this.nodes;
+		return this.mapping.get(c);
 	}
 	
 	public void PrintList() {
