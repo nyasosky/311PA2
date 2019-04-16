@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 public class CommunicationsMonitor {
@@ -68,8 +69,13 @@ public class CommunicationsMonitor {
 	
 	public List<ComputerNode> queryInfection(int c1, int c2, int x, int y){
         if (graphMade) {
-            List<ComputerNode> list = new ArrayList<ComputerNode>();
-
+            ArrayList<ComputerNode> list = new ArrayList<ComputerNode>();
+            for (ComputerNode n : mapping.get(c1)) {
+            	if (n.getTimestamp() >= x) {
+            		DFS(n, c2, y, list);
+            		break;
+            	}
+            }
             return list;
         } else {
             System.out.println("Graph has not been made yet");
@@ -168,5 +174,36 @@ public class CommunicationsMonitor {
             }
         }
         return C;
+    }
+    
+    public void DFS(ComputerNode n, int c2, int time, ArrayList<ComputerNode> list){
+    	for (ComputerNode neighbor : n.getOutNeighbors()) {
+    		neighbor.setColor(0);
+    		neighbor.setPred(null);
+    	}
+    	for (ComputerNode node : mapping.get(n.getID())){
+    		if (node.getColor() == 0) {
+    			DFSVisit(node, c2, time, list);
+    		}
+    		
+    	}
+    }
+    
+    public void DFSVisit(ComputerNode n, int c2, int time, ArrayList<ComputerNode> list) {
+    	n.setColor(1);
+    	for (ComputerNode neighbor : n.getOutNeighbors()) {
+    		if (neighbor.getID() == c2 && neighbor.getTimestamp() == time) {
+    			list.add(neighbor);
+    			while(neighbor.getPred() != null) {
+    				list.add(neighbor.getPred());
+    			}
+    			Collections.reverse(list);
+    		}
+    		else if (neighbor.getColor() == 0) {
+    			neighbor.setPred(n);
+    			DFSVisit(neighbor, c2, time, list);
+    		}
+    	}
+    	n.setColor(2);
     }
 }
