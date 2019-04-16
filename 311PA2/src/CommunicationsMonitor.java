@@ -209,4 +209,11 @@ public class CommunicationsMonitor {
     	}
     	n.setColor(2);
     }
+    
+    public void PrintPathList(ArrayList<ComputerNode> list) {
+    	for (int i = 0; i < list.size(); i++) {
+    		System.out.print("<" + list.get(i).getID() + "," + list.get(i).getTimestamp() + ">" + " ");
+    	}
+    	System.out.println("\n");
+    }
 }
