@@ -193,14 +193,17 @@ public class CommunicationsMonitor {
     	n.setColor(1);
     	for (ComputerNode neighbor : n.getOutNeighbors()) {
     		if (neighbor.getID() == c2 && neighbor.getTimestamp() == time) {
+                neighbor.setPred(n);
     			list.add(neighbor);
     			while(neighbor.getPred() != null) {
-    				list.add(neighbor.getPred());
+                    neighbor = neighbor.getPred();
+                    list.add(neighbor);
     			}
     			Collections.reverse(list);
+                return;
     		}
     		else if (neighbor.getColor() == 0) {
-    			neighbor.setPred(n);
+                neighbor.setPred(n);
     			DFSVisit(neighbor, c2, time, list);
     		}
     	}
