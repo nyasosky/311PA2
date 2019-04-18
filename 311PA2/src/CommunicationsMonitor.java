@@ -41,6 +41,8 @@ public class CommunicationsMonitor {
                     if (c1List.get(c1List.size() - 1).getTimestamp() == triple.get(2)) {
                         c1Node = c1List.get(c1List.size() - 1);
                         newC1Node = false;
+                    } else {
+                        c1List.get(c1List.size() - 1).addOutNeighbor(c1Node);
                     }
                 }
                 if (mapping.get(triple.get(1)) == null) {
@@ -50,6 +52,8 @@ public class CommunicationsMonitor {
                     if (c2List.get(c2List.size() - 1).getTimestamp() == triple.get(2)) {
                         c2Node = c2List.get(c2List.size() - 1);
                         newC2Node = false;
+                    } else {
+                        c2List.get(c2List.size() - 1).addOutNeighbor(c2Node);
                     }
                 }
                 c1Node.addOutNeighbor(c2Node);
@@ -181,18 +185,13 @@ public class CommunicationsMonitor {
     		neighbor.setColor(0);
     		neighbor.setPred(null);
     	}
-    	for (ComputerNode node : mapping.get(n.getID())){
-    		if (node.getColor() == 0) {
-    			DFSVisit(node, c2, time, list);
-    		}
-    		
-    	}
+        DFSVisit(n, c2, time, list);
     }
     
     public void DFSVisit(ComputerNode n, int c2, int time, ArrayList<ComputerNode> list) {
     	n.setColor(1);
     	for (ComputerNode neighbor : n.getOutNeighbors()) {
-    		if (neighbor.getID() == c2 && neighbor.getTimestamp() == time) {
+            if (neighbor.getID() == c2 && neighbor.getTimestamp() <= time) {
                 neighbor.setPred(n);
     			list.add(neighbor);
     			while(neighbor.getPred() != null) {
@@ -209,8 +208,8 @@ public class CommunicationsMonitor {
     	}
     	n.setColor(2);
     }
-    
-    public void PrintPathList(ArrayList<ComputerNode> list) {
+
+    public void PrintPathList(List<ComputerNode> list) {
     	for (int i = 0; i < list.size(); i++) {
     		System.out.print("<" + list.get(i).getID() + "," + list.get(i).getTimestamp() + ">" + " ");
     	}
