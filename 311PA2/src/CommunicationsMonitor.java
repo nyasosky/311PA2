@@ -7,6 +7,7 @@ public class CommunicationsMonitor {
     private HashMap<Integer, List<ComputerNode>> mapping;
     private List<List<Integer>> tripleList;
     private boolean graphMade;
+    private boolean listMade;
 	
 	public CommunicationsMonitor() {
         mapping = new HashMap<Integer, List<ComputerNode>>();
@@ -72,14 +73,30 @@ public class CommunicationsMonitor {
 	}
 	
 	public List<ComputerNode> queryInfection(int c1, int c2, int x, int y){
+		ComputerNode endOfList = null;
         if (graphMade) {
             ArrayList<ComputerNode> list = new ArrayList<ComputerNode>();
             for (ComputerNode n : mapping.get(c1)) {
-            	if (n.getTimestamp() >= x) {
-            		DFS(n, c2, y, list);
+            	if (n.getTimestamp() >= x && !listMade) {
+            		DFS(n, c2, y, list, endOfList);
             		break;
             	}
             }
+//            if (endOfList != null) {
+//            	list.add(endOfList);
+//            	while (endOfList.getPred() != null) {
+//            		endOfList = endOfList.getPred();
+//            		list.add(endOfList);
+//            	}
+//            }
+            if (!list.isEmpty()) {
+            	endOfList = list.get(0);
+            	while(endOfList.getPred() != null) {
+            		endOfList = endOfList.getPred();
+            		list.add(endOfList);
+            	}
+            }
+            Collections.reverse(list);
             return list;
         } else {
             System.out.println("Graph has not been made yet");
@@ -180,36 +197,41 @@ public class CommunicationsMonitor {
         return C;
     }
     
-    public void DFS(ComputerNode n, int c2, int time, ArrayList<ComputerNode> list){
+    public void DFS(ComputerNode n, int c2, int time, ArrayList<ComputerNode> list, ComputerNode endOfList){
     	for (ComputerNode neighbor : n.getOutNeighbors()) {
     		neighbor.setColor(0);
     		neighbor.setPred(null);
     	}
-        DFSVisit(n, c2, time, list);
+        DFSVisit(n, c2, time, list, endOfList);
     }
     
-    public void DFSVisit(ComputerNode n, int c2, int time, ArrayList<ComputerNode> list) {
+    public void DFSVisit(ComputerNode n, int c2, int time, ArrayList<ComputerNode> list, ComputerNode endOfList) {
     	n.setColor(1);
     	for (ComputerNode neighbor : n.getOutNeighbors()) {
-            if (neighbor.getID() == c2 && neighbor.getTimestamp() <= time) {
+            if (neighbor.getID() == c2 && neighbor.getTimestamp() <= time && !listMade) {
                 neighbor.setPred(n);
     			list.add(neighbor);
-    			while(neighbor.getPred() != null) {
-                    neighbor = neighbor.getPred();
-                    list.add(neighbor);
-    			}
-    			Collections.reverse(list);
+//    			while(neighbor.getPred() != null) {
+//                    neighbor = neighbor.getPred();
+//                    list.add(neighbor);
+//    			}
+//    			Collections.reverse(list);
+    			listMade = true;
+//    			endOfList = neighbor;
                 return;
     		}
     		else if (neighbor.getColor() == 0) {
                 neighbor.setPred(n);
-    			DFSVisit(neighbor, c2, time, list);
+    			DFSVisit(neighbor, c2, time, list, endOfList);
     		}
     	}
     	n.setColor(2);
-    }
+       }
 
     public void PrintPathList(List<ComputerNode> list) {
+    	if (list.size() == 0) {
+    		System.out.println("List is empty: No Possible Path\n");
+    	}
     	for (int i = 0; i < list.size(); i++) {
     		System.out.print("<" + list.get(i).getID() + "," + list.get(i).getTimestamp() + ">" + " ");
     	}
