@@ -14,8 +14,8 @@ public class CommunicationsMonitor {
         tripleList = new ArrayList<List<Integer>>();
         graphMade = false;
 	}
-	
-	public void addCommuncication(int c1, int c2, int timestamp) {
+
+    public void addCommunication(int c1, int c2, int timestamp) {
         if (!graphMade) {
             List<Integer> tripleToAdd = new ArrayList<Integer>();
             tripleToAdd.add(c1);
