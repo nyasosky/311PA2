@@ -14,8 +14,8 @@ public class CommunicationsMonitor {
         tripleList = new ArrayList<List<Integer>>();
         graphMade = false;
 	}
-	
-	public void addCommuncication(int c1, int c2, int timestamp) {
+
+    public void addCommunication(int c1, int c2, int timestamp) {
         if (!graphMade) {
             List<Integer> tripleToAdd = new ArrayList<Integer>();
             tripleToAdd.add(c1);
@@ -76,27 +76,21 @@ public class CommunicationsMonitor {
 		ComputerNode endOfList = null;
         if (graphMade) {
             ArrayList<ComputerNode> list = new ArrayList<ComputerNode>();
+            ComputerNode lastNode = null;
             for (ComputerNode n : mapping.get(c1)) {
             	if (n.getTimestamp() >= x && !listMade) {
-            		DFS(n, c2, y, list, endOfList);
+                    lastNode = DFS(n, c2, y);
             		break;
             	}
             }
-//            if (endOfList != null) {
-//            	list.add(endOfList);
-//            	while (endOfList.getPred() != null) {
-//            		endOfList = endOfList.getPred();
-//            		list.add(endOfList);
-//            	}
-//            }
-            if (!list.isEmpty()) {
-            	endOfList = list.get(0);
-            	while(endOfList.getPred() != null) {
-            		endOfList = endOfList.getPred();
-            		list.add(endOfList);
-            	}
+            if (lastNode != null) {
+                list.add(lastNode);
+                while (lastNode.getPred() != null) {
+                    lastNode = lastNode.getPred();
+                    list.add(lastNode);
+                }
+                Collections.reverse(list);
             }
-            Collections.reverse(list);
             return list;
         } else {
             System.out.println("Graph has not been made yet");
@@ -196,36 +190,31 @@ public class CommunicationsMonitor {
         }
         return C;
     }
-    
-    public void DFS(ComputerNode n, int c2, int time, ArrayList<ComputerNode> list, ComputerNode endOfList){
-    	for (ComputerNode neighbor : n.getOutNeighbors()) {
-    		neighbor.setColor(0);
-    		neighbor.setPred(null);
-    	}
-        DFSVisit(n, c2, time, list, endOfList);
+
+    public ComputerNode DFS(ComputerNode n, int c2, int time) {
+        n.setColor(0);
+        n.setPred(null);
+        initDFS(n);
+        return DFSVisit(n, c2, time);
     }
-    
-    public void DFSVisit(ComputerNode n, int c2, int time, ArrayList<ComputerNode> list, ComputerNode endOfList) {
+
+    public ComputerNode DFSVisit(ComputerNode n, int c2, int time) {
     	n.setColor(1);
     	for (ComputerNode neighbor : n.getOutNeighbors()) {
-            if (neighbor.getID() == c2 && neighbor.getTimestamp() <= time && !listMade) {
+            if (neighbor.getID() == c2 && neighbor.getTimestamp() <= time) {
                 neighbor.setPred(n);
-    			list.add(neighbor);
-//    			while(neighbor.getPred() != null) {
-//                    neighbor = neighbor.getPred();
-//                    list.add(neighbor);
-//    			}
-//    			Collections.reverse(list);
-    			listMade = true;
-//    			endOfList = neighbor;
-                return;
+                return neighbor;
     		}
     		else if (neighbor.getColor() == 0) {
                 neighbor.setPred(n);
-    			DFSVisit(neighbor, c2, time, list, endOfList);
+                ComputerNode returnedNode = DFSVisit(neighbor, c2, time);
+                if (returnedNode != null) {
+                    return returnedNode;
+                }
     		}
     	}
     	n.setColor(2);
+        return null;
        }
 
     public void PrintPathList(List<ComputerNode> list) {
@@ -236,5 +225,17 @@ public class CommunicationsMonitor {
     		System.out.print("<" + list.get(i).getID() + "," + list.get(i).getTimestamp() + ">" + " ");
     	}
     	System.out.println("\n");
+    }
+
+    private void initDFS(ComputerNode n) {
+        for (ComputerNode neighbor : n.getOutNeighbors()) {
+            if (neighbor.getColor() != 0) {
+                neighbor.setColor(0);
+                neighbor.setPred(null);
+                if (neighbor.getOutNeighbors() != null) {
+                    initDFS(neighbor);
+                }
+            }
+        }
     }
 }
