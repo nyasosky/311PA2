@@ -2,19 +2,49 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-public class CommunicationsMonitor {
 
+/**
+ * Class for building the data structure and querying infections throughout the computers
+ * @author Ryan Connolly Nathan Yasosky
+ *
+ */
+public class CommunicationsMonitor {
+	
+	/**
+	 * HashMap used to hold the communications and create the graph structure
+	 */
     private HashMap<Integer, List<ComputerNode>> mapping;
+    
+    /**
+     * List of triples to make adding them into the hashmap easier
+     */
     private List<List<Integer>> tripleList;
+    
+    /**
+     * Boolean used to check if the graph has been made
+     */
     private boolean graphMade;
+    
+    /**
+     * Boolean to check if the list of infection has been made
+     */
     private boolean listMade;
 	
+    /**
+     * Constructor for setting up a CommunicationsMonitor
+     */
 	public CommunicationsMonitor() {
         mapping = new HashMap<Integer, List<ComputerNode>>();
         tripleList = new ArrayList<List<Integer>>();
         graphMade = false;
 	}
 
+	/**
+	 * Method for adding a communication between two computers at a certain time
+	 * @param c1 The first computer
+	 * @param c2 The second computer
+	 * @param timestamp The time at which they communicated
+	 */
     public void addCommunication(int c1, int c2, int timestamp) {
         if (!graphMade) {
             List<Integer> tripleToAdd = new ArrayList<Integer>();
@@ -27,6 +57,9 @@ public class CommunicationsMonitor {
         }
 	}
 	
+    /**
+     * Method for creating the graph structure that is used when querying infections
+     */
 	public void createGraph() {
         if (tripleList.size() > 0) {
             tripleList = MergeSort(tripleList);
@@ -72,6 +105,14 @@ public class CommunicationsMonitor {
         graphMade = true;
 	}
 	
+	/**
+	 * Method for querying an infection from a single computer and checking to see if the computer c2 has been infected at time y
+	 * @param c1 First infected computer
+	 * @param c2 Second computer that is being checked to see if has been infected at time y
+	 * @param x the time that c1 has been infected
+	 * @param y the time that is being checked to see if c2 has been infected by
+	 * @return The list of computers from the c1 to c2 that have been infected along the way
+	 */
 	public List<ComputerNode> queryInfection(int c1, int c2, int x, int y){
 		ComputerNode endOfList = null;
         if (graphMade) {
@@ -97,7 +138,11 @@ public class CommunicationsMonitor {
             return new ArrayList<ComputerNode>();
         }
 	}
-
+	
+	/**
+	 * Method for getting themapping of the hashmap
+	 * @return the hashmap structure mapping
+	 */
     public HashMap<Integer, List<ComputerNode>> getComputerMapping() {
         if (graphMade) {
             return mapping;
@@ -107,6 +152,11 @@ public class CommunicationsMonitor {
         }
 	}
 	
+    /**
+     * Method for getting the mapping from a certain computer
+     * @param c the id of the computer
+     * @return the mapping of the hashmap at that certain index
+     */
 	public List<ComputerNode> getComputerMapping(int c){
         if (graphMade) {
             if (mapping.get(c) != null)
@@ -140,6 +190,11 @@ public class CommunicationsMonitor {
         }
     }
 
+    /**
+     * MergeSort is used to sort the triples by nondecreasing timestamp
+     * @param list the list of triples
+     * @return the sorted list
+     */
     private List<List<Integer>> MergeSort(List<List<Integer>> list) {
         int n = list.size();
         if (n == 1)
@@ -149,6 +204,12 @@ public class CommunicationsMonitor {
         return Merge(MergeSort(firstHalf), MergeSort(secondHalf));
     }
 
+    /**
+     * Method for sorting two lists
+     * @param A The first lsit to sort
+     * @param B The second list to sort
+     * @return The sorted list from A and B
+     */
     private List<List<Integer>> Merge(List<List<Integer>> A, List<List<Integer>> B) {
         int p = A.size();
         int q = B.size();
@@ -191,6 +252,13 @@ public class CommunicationsMonitor {
         return C;
     }
 
+    /**
+     * DFS is used to search and traverse through the graph
+     * @param n The node to start at
+     * @param c2 The computer id that is trying to be found
+     * @param time The time at which is being checked to see if c2 has been infected by
+     * @return The ComputerNode communication of c2 that has been infected by time time
+     */
     public ComputerNode DFS(ComputerNode n, int c2, int time) {
         n.setColor(0);
         n.setPred(null);
@@ -198,6 +266,13 @@ public class CommunicationsMonitor {
         return DFSVisit(n, c2, time);
     }
 
+    /**
+     * Used to check to see if the current node has neighbors that have the id of c2 and has been infected at time time
+     * @param n current node
+     * @param c2 The computer id that is trying to be found
+     * @param time The time at which is being checked to see if c2 has been infected by
+     * @return The ComputerNode communication of c2 that has been infected by time time
+     */
     public ComputerNode DFSVisit(ComputerNode n, int c2, int time) {
     	n.setColor(1);
     	for (ComputerNode neighbor : n.getOutNeighbors()) {
@@ -227,6 +302,10 @@ public class CommunicationsMonitor {
     	System.out.println("\n");
     }
 
+    /**
+     * Initializes all of the ComputerNodes color to be white
+     * @param n The node to start at
+     */
     private void initDFS(ComputerNode n) {
         for (ComputerNode neighbor : n.getOutNeighbors()) {
             if (neighbor.getColor() != 0) {
