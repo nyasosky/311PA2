@@ -7,7 +7,6 @@ public class CommunicationsMonitor {
     private HashMap<Integer, List<ComputerNode>> mapping;
     private List<List<Integer>> tripleList;
     private boolean graphMade;
-    private boolean listMade;
 	
 	public CommunicationsMonitor() {
         mapping = new HashMap<Integer, List<ComputerNode>>();
@@ -22,8 +21,6 @@ public class CommunicationsMonitor {
             tripleToAdd.add(c2);
             tripleToAdd.add(timestamp);
             tripleList.add(tripleToAdd);
-        } else {
-            System.out.println("Sorry the graph has already been made. You can no longer add more computer communications to the list");
         }
 	}
 	
@@ -77,11 +74,13 @@ public class CommunicationsMonitor {
         if (graphMade) {
             ArrayList<ComputerNode> list = new ArrayList<ComputerNode>();
             ComputerNode lastNode = null;
-            for (ComputerNode n : mapping.get(c1)) {
-            	if (n.getTimestamp() >= x && !listMade) {
-                    lastNode = DFS(n, c2, y);
-            		break;
-            	}
+            if (mapping.get(c1) != null) {
+                for (ComputerNode n : mapping.get(c1)) {
+                    if (n.getTimestamp() >= x) {
+                        lastNode = DFS(n, c2, y);
+                        break;
+                    }
+                }
             }
             if (lastNode != null) {
                 list.add(lastNode);
@@ -90,11 +89,11 @@ public class CommunicationsMonitor {
                     list.add(lastNode);
                 }
                 Collections.reverse(list);
-            }
-            return list;
+                return list;
+            } else
+                return null;
         } else {
-            System.out.println("Graph has not been made yet");
-            return new ArrayList<ComputerNode>();
+            return null;
         }
 	}
 
@@ -102,19 +101,15 @@ public class CommunicationsMonitor {
         if (graphMade) {
             return mapping;
         } else {
-            System.out.println("Graph has not been made yet");
-            return new HashMap<Integer, List<ComputerNode>>();
+            return null;
         }
 	}
 	
 	public List<ComputerNode> getComputerMapping(int c){
         if (graphMade) {
-            if (mapping.get(c) != null)
-                return mapping.get(c);
-            return new ArrayList<ComputerNode>();
+            return mapping.get(c);
         } else {
-            System.out.println("Graph has not been made yet");
-            return new ArrayList<ComputerNode>();
+            return null;
         }
 	}
 
@@ -218,8 +213,9 @@ public class CommunicationsMonitor {
        }
 
     public void PrintPathList(List<ComputerNode> list) {
-    	if (list.size() == 0) {
+        if (list == null) {
     		System.out.println("List is empty: No Possible Path\n");
+            return;
     	}
     	for (int i = 0; i < list.size(); i++) {
     		System.out.print("<" + list.get(i).getID() + "," + list.get(i).getTimestamp() + ">" + " ");
