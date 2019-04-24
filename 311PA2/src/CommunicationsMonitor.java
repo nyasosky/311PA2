@@ -131,11 +131,12 @@ public class CommunicationsMonitor {
                     list.add(lastNode);
                 }
                 Collections.reverse(list);
+                return list;
             }
-            return list;
+            return null;
         } else {
             System.out.println("Graph has not been made yet");
-            return new ArrayList<ComputerNode>();
+            return null;
         }
 	}
 	
