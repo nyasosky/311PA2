@@ -264,6 +264,9 @@ public class CommunicationsMonitor {
         n.setColor(0);
         n.setPred(null);
         initDFS(n);
+        if (n.getID() == c2 && n.getTimestamp() <= time) {
+        	return n;
+        }
         return DFSVisit(n, c2, time);
     }
 
