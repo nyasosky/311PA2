@@ -159,28 +159,6 @@ public class CommunicationsMonitor {
         }
 	}
 
-    public void printComputerMapping() {
-        int i = 0, j = 0;
-        while (i < mapping.size()) {
-            System.out.println("" + j + " :");
-            if (mapping.get(j) != null) {
-                for (ComputerNode c : mapping.get(j)) {
-                    System.out.println("\tID : " + c.getID());
-                    System.out.println("\tTimestamp : " + c.getTimestamp());
-                    System.out.println("\tNeighbors : ");
-                    for (ComputerNode d : c.getOutNeighbors()) {
-                        System.out.println("\t\tID : " + d.getID());
-                        System.out.println("\t\tTimestamp : " + d.getTimestamp() + "\n");
-                    }
-                }
-                i++;
-            } else {
-                System.out.println("\tThis entry is empty");
-            }
-            j++;
-        }
-    }
-
     /**
      * MergeSort is used to sort the triples by nondecreasing timestamp
      * @param list the list of triples
@@ -250,7 +228,7 @@ public class CommunicationsMonitor {
      * @param time The time at which is being checked to see if c2 has been infected by
      * @return The ComputerNode communication of c2 that has been infected by time time
      */
-    public ComputerNode DFS(ComputerNode n, int c2, int time) {
+    private ComputerNode DFS(ComputerNode n, int c2, int time) {
         n.setColor(0);
         n.setPred(null);
         initDFS(n);
@@ -267,7 +245,7 @@ public class CommunicationsMonitor {
      * @param time The time at which is being checked to see if c2 has been infected by
      * @return The ComputerNode communication of c2 that has been infected by time time
      */
-    public ComputerNode DFSVisit(ComputerNode n, int c2, int time) {
+    private ComputerNode DFSVisit(ComputerNode n, int c2, int time) {
     	n.setColor(1);
     	for (ComputerNode neighbor : n.getOutNeighbors()) {
             if (neighbor.getID() == c2 && neighbor.getTimestamp() <= time) {
@@ -286,17 +264,6 @@ public class CommunicationsMonitor {
         return null;
        }
 
-    public void PrintPathList(List<ComputerNode> list) {
-        if (list == null) {
-    		System.out.println("List is empty: No Possible Path\n");
-            return;
-    	}
-    	for (int i = 0; i < list.size(); i++) {
-    		System.out.print("<" + list.get(i).getID() + "," + list.get(i).getTimestamp() + ">" + " ");
-    	}
-    	System.out.println("\n");
-    }
-
     /**
      * Initializes all of the ComputerNodes color to be white
      * @param n The node to start at
@@ -311,5 +278,38 @@ public class CommunicationsMonitor {
                 }
             }
         }
+    }
+
+    public void printComputerMapping() {
+        int i = 0, j = 0;
+        while (i < mapping.size()) {
+            System.out.println("" + j + " :");
+            if (mapping.get(j) != null) {
+                for (ComputerNode c : mapping.get(j)) {
+                    System.out.println("\tID : " + c.getID());
+                    System.out.println("\tTimestamp : " + c.getTimestamp());
+                    System.out.println("\tNeighbors : ");
+                    for (ComputerNode d : c.getOutNeighbors()) {
+                        System.out.println("\t\tID : " + d.getID());
+                        System.out.println("\t\tTimestamp : " + d.getTimestamp() + "\n");
+                    }
+                }
+                i++;
+            } else {
+                System.out.println("\tThis entry is empty");
+            }
+            j++;
+        }
+    }
+
+    public void PrintPathList(List<ComputerNode> list) {
+        if (list == null) {
+            System.out.println("List is empty: No Possible Path\n");
+            return;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            System.out.print("<" + list.get(i).getID() + "," + list.get(i).getTimestamp() + ">" + " ");
+        }
+        System.out.println("\n");
     }
 }
